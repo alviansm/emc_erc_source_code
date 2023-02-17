@@ -176,12 +176,27 @@ void show_setting_menu() {
     
     show_string("Menu Utama", 110, 16, 2, WHITE, BLACK, 1);
 
-    //goto wifi setting
+    //goto kontrol komponen
     my_lcd.Set_Draw_color(220, 255, 255);
-    my_lcd.Fill_Rectangle(32, 48, 288, 80);
-    show_string("Pengaturan Wi-FI", 64, 56, 2, BLACK, BLACK, 1);
+    my_lcd.Fill_Rectangle(32, 48, 151, 80);
+    show_string("Switch", 44, 56, 2, BLACK, BLACK, 1);
+
+    //detail
+    my_lcd.Set_Draw_color(220, 255, 255);
+    my_lcd.Fill_Rectangle(170, 48, 288, 80);
+    show_string("Details", 182, 56, 2, BLACK, BLACK, 1);
     
-    //goto 
+    //goto wifi
+    my_lcd.Set_Draw_color(220, 255, 255);
+    my_lcd.Fill_Rectangle(32, 96, 288, 128);
+    show_string("Pengaturan Wi-FI", 64, 104, 2, BLACK, BLACK, 1);
+
+    //goto info
+    my_lcd.Set_Draw_color(220, 255, 255);
+    my_lcd.Fill_Rectangle(32, 144, 288, 176);
+    show_string("Info", 138, 154, 2, BLACK, BLACK, 1);
+
+    //goto
 
     //button back to dashboard
     my_lcd.Set_Draw_color(220, 255, 255);
@@ -189,10 +204,28 @@ void show_setting_menu() {
     show_string("<-", 25, 220, 2, BLACK, BLACK, 2);
 }
 
+void draw_info_page(){
+  my_lcd.Fill_Screen(BLUE);
+  show_string("Info", 4, 16, 2, WHITE, BLACK, 1);
+
+  show_string("Pengembangan Sistem Manajemen Energi Berbasis", CENTER, 48, 1, WHITE, BLACK, 1);
+  show_string("IoT Pada Refrigerasi Hybrid PCM Untuk Eco-Reefer", CENTER, 60, 1, WHITE, BLACK, 1);
+  show_string("Container", CENTER, 72, 1, WHITE, BLACK, 1);
+
+  //copyright
+  show_string("Alvians Maulana, 2023", CENTER, 220, 1, WHITE, BLACK, 1);
+
+  //button back to main menu
+  my_lcd.Set_Draw_color(220, 255, 255);
+  my_lcd.Fill_Rectangle(0, 208, 74, 240);
+  show_string("<-", 25, 220, 2, BLACK, BLACK, 2);
+}
+
 /*
  * Page
  * 0 -> Dashboard
  * 1 -> Main Menu
+ * 2 -> Info
  */
 void setup() {
   Serial.begin(9600);
@@ -223,7 +256,8 @@ void loop() {
      Serial.print(p.x);
      Serial.print(",");
      Serial.print(p.y);     
-     Serial.println();     
+     Serial.println();          
+     //===============in dashboard -> main menu====================
      if (is_pressed(0, 180, 64, 240, p.x, p.y) && page=='0'){        
         //button goto main menu (page 1) - pressed
         my_lcd.Set_Draw_color(55, 55, 55);
@@ -236,7 +270,8 @@ void loop() {
         Serial.println(page);
         //my_lcd.Set_Draw_color(0, 255, 255);
         //my_lcd.Fill_Rectangle(320, 240, 246, 208); 
-     }
+     }     
+     //==============in main menu -> dashboard====================
      if (is_pressed(0, 0, 64, 64, p.x, p.y) && page=='1') {
         //button goto dashboard (page 0) - pressed
         my_lcd.Set_Draw_color(55, 55, 55);
@@ -244,7 +279,28 @@ void loop() {
         show_string("<-", 25, 220, 2, WHITE, BLACK, 2);
         delay(200);
         draw_home_screen();
-        page = '0';
+        page = '0';        
+     }
+     //===============in main menu -> info=============
+     if (is_pressed(105, 30, 145, 200, p.x, p.y) && page=='1') {
+        //button go to info
+        my_lcd.Set_Draw_color(55, 55, 55);
+        my_lcd.Fill_Rectangle(32, 144, 288, 176);
+        show_string("Info", 138, 154, 2, BLACK, BLACK, 1);
+        delay(200);
+        draw_info_page();
+        page = '2';        
+     }
+     //==============in info -> main menu=============
+     if (is_pressed(0, 0, 64, 64, p.x, p.y) && (page=='2' || page=='3' || page=='4')) {
+        //button back to main menu
+        my_lcd.Set_Draw_color(55, 55, 55);
+        my_lcd.Fill_Rectangle(0, 208, 74, 240);
+        show_string("<-", 25, 220, 2, WHITE, BLACK, 2);
+        delay(200);
+        
+        show_setting_menu();
+        page = '1';    
      }
   }  
 }
